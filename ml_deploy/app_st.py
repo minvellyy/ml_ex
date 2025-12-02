@@ -4,15 +4,17 @@ import pickle
 import os
 
 # 모델 로드 함수
-@st.cache_resource # 자원 캐싱 기능
+@st.cache_resource  # 자원 캐싱 기능
 def load_model():
-     base_path = os.path.dirname(file)
-     model_path = os.path.join(base_path, "models", "iris_model_rfc.pkl")
-    # with open('models/iris_model_rfc.pkl', 'rb') as f:
+    base_path = os.path.dirname(__file__)
+    model_path = os.path.join(base_path, "models", "iris_model_rfc.pkl")
+
     with open(model_path, 'rb') as f:
-         model = pickle.load(f)
+        model = pickle.load(f)
     return model
+
 model = load_model()
+
 
 # 클래스별 이미지 경로 설정
 def get_image_path(prediction):
