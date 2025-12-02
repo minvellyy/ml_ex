@@ -1,7 +1,6 @@
 # Byte-compiled / optimized / DLL files
 
 datas_ml/
-ml_deploy/
 
 __pycache__/
 *.py[codz]
