@@ -17,25 +17,39 @@ model = load_model()
 
 
 # 클래스별 이미지 경로 설정
-def get_image_path(prediction):
-    # if prediction == 0:
-    #     return "static/setosa.jpg" # setosa 이미지 경로
-    # elif prediction == 1:   
-    #     return "static/versicolor.jpg" # versicolor 이미지 경로
-    # else:
-    #     return "static/virginica.png" # virginica 이미지 경로
+# def get_image_path(prediction):
+#     # if prediction == 0:
+#     #     return "static/setosa.jpg" # setosa 이미지 경로
+#     # elif prediction == 1:   
+#     #     return "static/versicolor.jpg" # versicolor 이미지 경로
+#     # else:
+#     #     return "static/virginica.png" # virginica 이미지 경로
 
-    base_path = os.path.dirname(__file__)     # app_st.py 기준 경로
-    image_dir = os.path.join(base_path, "images")
-    
+#     base_path = os.path.dirname(__file__)     # app_st.py 기준 경로
+#     image_dir = os.path.join(base_path, "images")
+
+#     if prediction == 0:
+#         image_filename = "setosa.jpg"        # ← 실제 파일명/확장자와 정확히 맞춰!
+#     elif prediction == 1:
+#         image_filename = "versicolor.jpg"
+#     else:
+#         image_filename = "virginica.png"
+
+#     return os.path.join(image_dir, image_filename)
+
+def get_image_path(prediction):
+    base_path = os.path.dirname(__file__)          # app_st.py 기준 경로
+    image_dir = os.path.join(base_path, "static")  # ✅ static 폴더로 변경
+
     if prediction == 0:
-        image_filename = "setosa.jpg"        # ← 실제 파일명/확장자와 정확히 맞춰!
+        image_filename = "setosa.jpg"      # 실제 파일명/확장자랑 정확히 맞게!
     elif prediction == 1:
         image_filename = "versicolor.jpg"
     else:
         image_filename = "virginica.png"
 
     return os.path.join(image_dir, image_filename)
+
 
 # Streamlit 앱 구성
 st.title("Iris 품종 예측")
