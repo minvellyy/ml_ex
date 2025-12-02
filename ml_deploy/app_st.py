@@ -10,7 +10,7 @@ def load_model():
      model_path = os.path.join(base_path, "models", "iris_model_rfc.pkl")
     # with open('models/iris_model_rfc.pkl', 'rb') as f:
     with open(model_path, 'rb') as f:
-        model = pickle.load(f)
+         model = pickle.load(f)
     return model
 model = load_model()
 
