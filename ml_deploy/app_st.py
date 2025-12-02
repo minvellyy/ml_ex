@@ -2,107 +2,80 @@ import streamlit as st
 import numpy as np
 import pickle
 import os
+from pathlib import Path
+
+# 현재 파일의 디렉토리 경로 설정
+# ./ : 현재 디렉토리
+base_path = os.path.dirname(__file__)
 
 # 모델 로드 함수
-@st.cache_resource  # 자원 캐싱 기능
+@st.cache_resource # 자원 캐싱 기능
 def load_model():
-    base_path = os.path.dirname(__file__)
     model_path = os.path.join(base_path, "models", "iris_model_rfc.pkl")
-
+    # with open('models/iris_model_rfc.pkl', 'rb') as f:
     with open(model_path, 'rb') as f:
         model = pickle.load(f)
     return model
 
 model = load_model()
 
-
-# 클래스별 이미지 경로 설정
+# #클래스별 이미지 경로 설정
+# 윈도우에서만 됨
 # def get_image_path(prediction):
-#     # if prediction == 0:
-#     #     return "static/setosa.jpg" # setosa 이미지 경로
-#     # elif prediction == 1:   
-#     #     return "static/versicolor.jpg" # versicolor 이미지 경로
-#     # else:
-#     #     return "static/virginica.png" # virginica 이미지 경로
-
-#     base_path = os.path.dirname(__file__)     # app_st.py 기준 경로
-#     image_dir = os.path.join(base_path, "images")
-
 #     if prediction == 0:
-#         image_filename = "setosa.jpg"        # ← 실제 파일명/확장자와 정확히 맞춰!
+#         return base_path / "static" / "setosa.jpg" # setosa 이미지 경로
 #     elif prediction == 1:
-#         image_filename = "versicolor.jpg"
+#         return base_path / "static" / "versicolor.jpg" # versicolor 이미지 경로
 #     else:
-#         image_filename = "virginica.png"
-
-#     return os.path.join(image_dir, image_filename)
-
+#         return base_path / "static" / "virginica.png" # virginica 이미지 경로
+    
+#클래스별 이미지 경로 설정
+# 리눅스, 맥OS, 윈도우 모두에서 작동
 def get_image_path(prediction):
-    base_path = os.path.dirname(__file__)          # app_st.py 기준 경로
-    image_dir = os.path.join(base_path, "static")  # ✅ static 폴더로 변경
-
     if prediction == 0:
-        image_filename = "setosa.jpg"      # 실제 파일명/확장자랑 정확히 맞게!
+        return os.path.join(base_path, "static", "setosa.jpg") # setosa 이미지 경로
     elif prediction == 1:
-        image_filename = "versicolor.jpg"
+        return os.path.join(base_path, "static", "versicolor.jpg") # versicolor 이미지 경로
     else:
-        image_filename = "virginica.png"
-
-    return os.path.join(image_dir, image_filename)
-
-
+        return os.path.join(base_path, "static", "virginica.png") # virginica 이미지 경로
+    
 # Streamlit 앱 구성
 st.title("Iris 품종 예측")
-st.write("꽃받침 길이, 너비, 꽃잎 길이, 너비를 입력하여 품종을 예측해보세요.")
+st.write("꽃받침 길이, 너비, 꽃잎 길이, 너비를 입력하여 품종을 예측해보세요")
 
 # 사용자 입력 받기
-sepal_length = st.number_input("꽃받침 길이",
-
-min_value=0.0, max_value=10.0, value=5.0)
-
-sepal_width = st.number_input("꽃받침 너비",
-
-min_value=0.0, max_value=10.0, value=3.0)
-
-petal_length = st.number_input("꽃잎 길이",
-
-min_value=0.0, max_value=10.0, value=4.0)
-
-petal_width = st.number_input("꽃잎 너비",
-
-min_value=0.0, max_value=10.0, value=1.0)
+sepal_length = st.number_input("꽃받침 길이", min_value=0.0, max_value=10.0, value=5.0)
+sepal_width = st.number_input("꽃받침 너비", min_value=0.0, max_value=10.0, value=3.0)
+petal_length = st.number_input("꽃잎 길이", min_value=0.0, max_value=10.0, value=4.0)
+petal_width = st.number_input("꽃잎 너비", min_value=0.0, max_value=10.0, value=1.0)
 
 # 예측하기 버튼
 if st.button("예측하기"):
     # 예측 버튼을 눌렀을 때
-    bun_clicked = True
-else:
-    # 눌르지 않았을 때
-    bun_clicked = False
+    btn_clicked = True
+else: 
+    btn_clicked = False
 
-st.markdown("----")
-st.subheader("예측 결과")
-
-if bun_clicked==True:
+st.markdown("---")
+st.subheader("예측 결과 출력")
+if btn_clicked==True:
     input_data = np.array([[sepal_length, sepal_width, petal_length, petal_width]])
+    #
     # 예측 수행
     prediction = model.predict(input_data)
     predicted_class = prediction[0]
     # 예측된 클래스 이름
     class_name = ['Setosa', 'Versicolor', 'Virginica'][predicted_class]
-    # st.subheader(f"예측된 품종: {class_name}")
+    # 예측된 품종에 해당하는 이미지 출력
+    # image_path = get_image_path(predicted_class)
+    # st.image(image_path, use_container_width=True, caption=class_name)
 
-    # 이미지 크기 고정
     col1, col2, col3 = st.columns([1,5,1])
     with col2:
-        st.subheader(f"예측된 품종: {class_name}")
+        st.subheader(f"예측된 품종 : {class_name}")     
         # 예측된 품종에 해당하는 이미지 출력
         image_path = get_image_path(predicted_class)
         st.image(image_path, use_container_width=True, caption=class_name)
 
-        # 예측된 품종에 해당하는 이미지 출력
-        # image_path = get_image_path(predicted_class)
-        # st.image(image_path, caption=class_name)
-
 else:
-    st.warning("값을 입력하고, 예측하기 버튼을 눌러주세요.")
+    st.warning("값을 입력하고 '예측하기' 버튼을 눌러주세요.")
